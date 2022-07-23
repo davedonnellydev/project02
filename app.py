@@ -12,6 +12,7 @@ app.config["SECRET_KEY"] = SECRET_KEY
 def index():
     if 'username' in session:
         username = session['username']
+        return redirect(f"/user/{username}")
     else:
         username = None
     return render_template('index.html', username=username)
@@ -53,7 +54,7 @@ def check_new_user():
 def login():
     if 'username' in session:
         username = session["username"]
-        return redirect("/")
+        return redirect(f"/user/{username}")
     else:
         username = None
         return render_template("login.html", username=username)
@@ -69,17 +70,22 @@ def authenticate():
     password = request.form.get('password')
     db_password_results = service.authenticate_user(username)
     if db_password_results['rowCount'] == 0:
-        return redirect("/")
+        print("Username not found")
+        return redirect("/login")
     else:
         db_password = db_password_results['pwResults'][0][0]
         if service.check_password(password, db_password):
             print("Password accepted")
             session["username"] = username
             session["user_id"] = db_password_results['pwResults'][0][1]
-            return redirect("/")
+            return redirect(f"/user/{username}")
         else:
             print("Password denied")
             return redirect("/")
+
+@app.route('/user/<userpage>')
+def user_page(userpage):
+    return render_template('userhome.html', userpage=userpage)
 
 if __name__ == '__main__':
     app.run(debug=True)
