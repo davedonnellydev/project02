@@ -96,13 +96,5 @@ def user_page(userpage):
         results = None
     return render_template('userhome.html', username=username, userpage=userpage, query=query, results=results)
 
-# @app.route('/search', methods=['POST'])
-# def search_movies():
-#     query = request.form.get('query')
-#     userpage = request.form.get('userpage')
-#     results = service.movie_search(query)
-#     session['search-results'] = results
-#     return redirect(f'/user/{userpage}')
-
 if __name__ == '__main__':
     app.run(debug=True)
