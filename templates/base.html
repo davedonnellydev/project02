@@ -7,6 +7,15 @@
     {% endblock %}
 </head>
 <body>
+    <div id="header">
+        {% block header %}
+            {% if username %}
+                <a href="/logout">Log out</a>
+            {% else %}
+                <a href="/login">Login</a> or <a href="/signup">Sign up</a>
+            {% endif %}
+        {% endblock %}
+    </div>
     <div id="content">{% block content %}{% endblock %}</div>
     <div id="footer">
         {% block footer %}

@@ -1,16 +1,33 @@
 import os
 import psycopg2
 import bcrypt
+import requests
+import creds
 
 salt = bcrypt.gensalt()
 
+local_apikey = creds.api_key
+
 DATABASE_URL = os.environ.get('DATABASE_URL', 'dbname=movie_list')
+API_KEY = os.environ.get('API_KEY', local_apikey)
 
 def test():
     connection = psycopg2.connect(DATABASE_URL)
     cursor = connection.cursor()
     cursor.execute("SELECT 1")
     connection.close()
+
+def movie_search(query):
+    params = {
+        "api_key": local_apikey,
+        "language": "en-US",
+        "page": 1,
+        "include_adult": "true",
+        "query": query
+    }
+    response = requests.get("https://api.themoviedb.org/3/search/movie", params=params)
+    result = response.json()
+    return result
 
 
 

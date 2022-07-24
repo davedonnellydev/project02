@@ -5,9 +5,26 @@
 
 <h2>{{ userpage }}'s lists</h2>
 
-<label for="movieSearch">Search: </label>
-<input type="text" id="movieSearch">
+{% if username %}
 
+<form method="get">
+    <label for="movieSearch">Search: </label>
+    <input type="text" name="query" id="movieSearch" {% if query %} value="{{ query }}" {% endif %}>
+    <button type="submit">Search</button>
+</form>
 
+{% endif %}
+
+{% if results and results['total_results']|int > 0 %}
+<ul>
+    {% for item in results['results'] %}
+    <li>{{item['title']}} ({{item['release_date']}}) - {{item['overview']}}</li>
+    {% endfor %}
+</ul>
+{% elif results and results['total_results']|int == 0 %}
+<p><em>No movies found with that title</em></p>
+{% else %}
+
+{% endif %}
 
 {% endblock %}

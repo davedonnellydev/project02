@@ -85,7 +85,24 @@ def authenticate():
 
 @app.route('/user/<userpage>')
 def user_page(userpage):
-    return render_template('userhome.html', userpage=userpage)
+    if 'username' in session:
+        username = session['username']
+    else:
+        username = None
+    query = request.args.get('query')
+    if query:
+        results = service.movie_search(query)
+    else:
+        results = None
+    return render_template('userhome.html', username=username, userpage=userpage, query=query, results=results)
+
+# @app.route('/search', methods=['POST'])
+# def search_movies():
+#     query = request.form.get('query')
+#     userpage = request.form.get('userpage')
+#     results = service.movie_search(query)
+#     session['search-results'] = results
+#     return redirect(f'/user/{userpage}')
 
 if __name__ == '__main__':
     app.run(debug=True)
