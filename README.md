@@ -11,9 +11,19 @@ My approach to this app was to first try to get an understanding of the way the 
     - creating a search for public facing lists
     - a dynamic search bar which filtered results as the user types
 
-The below diagram shows the simple structure of the database:
+The below diagram shows the original structure of the database:
 
 ![a lister database structure](static/img/project02_db_structure.png)
+
+
+### Storing movie data
+
+In the approach to this app, I had a question in my mind about how much movie data to store in the database, considering I would be using an API to retrieve the data first. After a conversation with a colleague, [Chris](https://github.com/Chrispy1987), he suggested that it might be better to store the data needed for the app once the movie was committed to the list. He further explained that you can have a table specifically for the movie data, which the list data could reference by way of a movie id, so that you wouldn't be storing a version of the movie for every user, but rather that each user instance of the movie would draw from the one row in the movie table. He also suggested storing a count so that if the numbr of times that movie got used in various user lists got down to 1 and the final user was deleting the movie from their list, that movie could then also be deleted from the database so as to not take up unnecessary space. All of these ideas were great and I jumped onto them straight away.
+
+The below diagram shows the restructured (v2) version of the database:
+
+![a lister database structure v2](static/img/project02_db_structure_v2.jpeg)
+
 
 
 ## Wireframes
