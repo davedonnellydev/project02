@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ userpage }}'s New List{% endblock %}
+
+{% block content %}
+
+<form action="/create_list" method="post">
+    <label for="list_name">List name:</label>
+    <input type="text" id="list_name" name="list_name">
+    <label for="private">Private?</label>
+    <input type="checkbox" id="private" name="private">
+    <button type="submit">Create list</button>
+</form>
+
+{% endblock %}

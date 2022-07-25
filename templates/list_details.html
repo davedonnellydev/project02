@@ -1,0 +1,9 @@
+{% if list_items %}
+<p>list details:</p>
+<ul>
+{% for item in list_items %}
+<li>{{ item }}</li>
+{% endfor %}
+</ul>
+
+{% endif %}

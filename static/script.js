@@ -1,8 +1,8 @@
-const searchBar = document.getElementById("movieSearch");
+const addMovieButton = document.getElementById("movieSearchButton");
+const searchMoviesForm = document.getElementById("movieSearchForm");
 
-searchBar.addEventListener("keyup", search);
+addMovieButton.addEventListener("click", revealSearchForm);
 
-function search() {
-  searchTerm = searchBar.value;
-  console.log(searchTerm);
+function revealSearchForm() {
+  searchMoviesForm.style.display = "block";
 }

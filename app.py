@@ -87,6 +87,7 @@ def authenticate():
 def user_page(userpage):
     if 'username' in session:
         username = session['username']
+        user_id = session['user_id']
     else:
         username = None
     query = request.args.get('query')
@@ -94,7 +95,50 @@ def user_page(userpage):
         results = service.movie_search(query)
     else:
         results = None
-    return render_template('userhome.html', username=username, userpage=userpage, query=query, results=results)
+    list_of_lists = service.get_list_data(userpage)
+    return render_template('userhome.html', username=username, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists)
+
+
+@app.route('/add_movie', methods=['POST'])
+def add_movie():
+    movie_list = request.form.getlist('movie_id')
+    lists = request.form.getlist('lists')
+    user_page = request.form.get('userpage')
+    for list_id in lists:
+        for movie_id in movie_list:
+            error = service.add_movie_to_list(list_id,movie_id)
+            print(error)
+    return redirect(f'user/{user_page}')
+
+
+@app.route('/new_list', methods=['POST'])
+def new_list():
+    return render_template('new_list.html')
+
+@app.route('/create_list', methods=['POST'])
+def create_list():
+    list_name = request.form.get('list_name')
+    private = request.form.get('private')
+    user_id = session['user_id']
+    username = session['username']
+    service.create_new_list(user_id,list_name,private)
+    return redirect(f'/user/{username}')
+
+@app.route('/user/<userpage>/list/<list_id>', methods=['GET', 'POST'])
+def display_list(userpage,list_id):
+    if 'username' in session:
+        username = session['username']
+        user_id = session['user_id']
+    else:
+        username = None
+    query = request.args.get('query')
+    if query:
+        results = service.movie_search(query)
+    else:
+        results = None
+    list_of_lists = service.get_list_data(userpage)
+    list_items = service.get_list_items(list_id)
+    return render_template('userhome.html', username=username, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists, list_id=list_id, list_items=list_items)
 
 if __name__ == '__main__':
     app.run(debug=True)

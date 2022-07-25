@@ -29,7 +29,14 @@ def movie_search(query):
     result = response.json()
     return result
 
-
+def get_movie_info(movie_id):
+    params = {
+        "api_key": local_apikey,
+        "language": "en-US"
+    }
+    response = requests.get(f"https://api.themoviedb.org/3/movie/{movie_id}", params=params)
+    result = response.json()
+    return result
 
 def check_user(email, username):
     check = {}
@@ -73,3 +80,69 @@ def authenticate_user(username):
     db_password['rowCount'] = cur.rowcount
     db_password['pwResults'] = results
     return db_password
+
+
+def create_new_list(user_id,list_name,private):
+    conn = psycopg2.connect(DATABASE_URL)
+    cur = conn.cursor()
+    cur.execute('''
+    INSERT INTO lists (user_id,list_name,priv)
+    VALUES(%s,%s,%s);
+    ''', [user_id,list_name,private])
+    conn.commit()
+    conn.close()
+
+def get_list_data(userpage):
+    conn = psycopg2.connect(DATABASE_URL)
+    cur = conn.cursor()
+    cur.execute('SELECT id FROM users WHERE username = %s;', [userpage])
+    result = cur.fetchall()
+    user_id = result[0]
+    cur.execute('SELECT * FROM lists WHERE user_id = %s;', [user_id])
+    results = cur.fetchall()
+    return results
+
+def get_list_items(list_id):
+    conn = psycopg2.connect(DATABASE_URL)
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM list_items WHERE lists_id = %s;', [list_id])
+    results = cur.fetchall()
+    return results
+
+def add_movie_to_list(list_id,movie_id):
+    error = ''
+    conn = psycopg2.connect(DATABASE_URL)
+    cur = conn.cursor()
+    cur.execute('SELECT id FROM lists WHERE id=%s', [list_id])
+    list_count = cur.rowcount
+    cur.execute('SELECT id FROM movies WHERE tmdb_id=%s', [movie_id])
+    movie_count = cur.rowcount
+    if movie_count == 0:
+        movie_data = get_movie_info(movie_id)
+        print(movie_data['id'])
+        cur.execute('''
+        INSERT INTO movies (tmdb_id,imdb_id,title,release_date,tagline,overview,runtime_in_min,release_status,poster_url,user_count)
+        VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);
+        ''', [movie_data['id'],movie_data['imdb_id'],movie_data['title'],movie_data['release_date'],movie_data['tagline'],movie_data['overview'],movie_data['runtime'],movie_data['status'],movie_data['poster_path'],1])
+        conn.commit()
+    if movie_count == 1:
+        cur.execute('SELECT user_count FROM movies WHERE tmdb_id=%s', [movie_id])
+        user_count = cur.fetchall()[0]
+        updated_user_count = int(user_count[0]) + 1
+        cur.execute('UPDATE movies SET user_count=%s WHERE tmdb_id=%s', [updated_user_count,movie_id])
+        conn.commit()
+    cur.execute('SELECT id FROM movies WHERE tmdb_id=%s', [movie_id])
+    result = cur.fetchall()
+    movie_db_id = result[0]
+    cur.execute('SELECT id FROM list_items WHERE lists_id=%s and movie_id=%s', [list_id, movie_db_id])
+    list_items_count = cur.rowcount
+    if list_count == 1 and list_items_count == 0:
+        cur.execute('''
+        INSERT INTO list_items (lists_id,movie_id)
+        VALUES(%s,%s);
+        ''', [list_id,movie_db_id])
+        conn.commit()
+    else:
+        error = 'List item already exists'
+    conn.close()
+    return error
