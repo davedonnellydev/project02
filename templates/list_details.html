@@ -1,9 +1,14 @@
 {% if list_items %}
 <p>list details:</p>
-<ul>
+
 {% for item in list_items %}
-<li>{{ item }}</li>
+<div>
+    <p>
+        <img src="https://image.tmdb.org/t/p/w500{{ item[15] }}" width="50px">
+        <strong>{{ item[9] }}</strong> ({{ item[10] }})<br><em>{{ item[11] }}</em><br>
+        {{ item[12] }} (runtime: {{ item[13] }} mins)
+    </p>
+</div>
 {% endfor %}
-</ul>
 
 {% endif %}

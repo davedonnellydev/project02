@@ -10,12 +10,8 @@ app.config["SECRET_KEY"] = SECRET_KEY
 
 @app.route('/')
 def index():
-    if 'username' in session:
-        username = session['username']
-        return redirect(f"/user/{username}")
-    else:
-        username = None
-    return render_template('index.html', username=username)
+    user = service.get_session_data()
+    return render_template('index.html', user=user)
 
 @app.route('/signup')
 def signup():
@@ -52,51 +48,48 @@ def check_new_user():
 
 @app.route('/login')
 def login():
-    if 'username' in session:
-        username = session["username"]
-        return redirect(f"/user/{username}")
+    user = service.get_session_data()
+    return render_template("login.html", user=user)
+
+@app.route('/authenticate', methods=['POST'])
+def authenticate():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    user_data = service.authenticate_user(username)
+    if user_data['rowCount'] == 0:
+        print("Username not found")
+        return redirect("/login")
     else:
-        username = None
-        return render_template("login.html", username=username)
+        db_password = user_data['results'][0][5]
+        if service.check_password(password, db_password):
+            print("Password accepted")
+            session["user_id"] = user_data['results'][0][0]
+            session["username"] = user_data['results'][0][1]
+            session["user_email"] = user_data['results'][0][2]
+            session["user_fname"] = user_data['results'][0][3]
+            session["user_lname"] = user_data['results'][0][4]
+            return redirect(f"/user/{username}")
+        else:
+            print("Password denied")
+            return redirect("/")
+
 
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect("/")
 
-@app.route('/authenticate', methods=['POST'])
-def authenticate():
-    username = request.form.get('username')
-    password = request.form.get('password')
-    db_password_results = service.authenticate_user(username)
-    if db_password_results['rowCount'] == 0:
-        print("Username not found")
-        return redirect("/login")
-    else:
-        db_password = db_password_results['pwResults'][0][0]
-        if service.check_password(password, db_password):
-            print("Password accepted")
-            session["username"] = username
-            session["user_id"] = db_password_results['pwResults'][0][1]
-            return redirect(f"/user/{username}")
-        else:
-            print("Password denied")
-            return redirect("/")
 
 @app.route('/user/<userpage>')
 def user_page(userpage):
-    if 'username' in session:
-        username = session['username']
-        user_id = session['user_id']
-    else:
-        username = None
+    user = service.get_session_data()
     query = request.args.get('query')
     if query:
         results = service.movie_search(query)
     else:
         results = None
     list_of_lists = service.get_list_data(userpage)
-    return render_template('userhome.html', username=username, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists)
+    return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists)
 
 
 @app.route('/add_movie', methods=['POST'])
@@ -113,7 +106,8 @@ def add_movie():
 
 @app.route('/new_list', methods=['POST'])
 def new_list():
-    return render_template('new_list.html')
+    user = service.get_session_data()
+    return render_template('new_list.html', user=user)
 
 @app.route('/create_list', methods=['POST'])
 def create_list():
@@ -126,11 +120,7 @@ def create_list():
 
 @app.route('/user/<userpage>/list/<list_id>', methods=['GET', 'POST'])
 def display_list(userpage,list_id):
-    if 'username' in session:
-        username = session['username']
-        user_id = session['user_id']
-    else:
-        username = None
+    user = service.get_session_data()
     query = request.args.get('query')
     if query:
         results = service.movie_search(query)
@@ -138,7 +128,7 @@ def display_list(userpage,list_id):
         results = None
     list_of_lists = service.get_list_data(userpage)
     list_items = service.get_list_items(list_id)
-    return render_template('userhome.html', username=username, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists, list_id=list_id, list_items=list_items)
+    return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists, list_id=list_id, list_items=list_items)
 
 if __name__ == '__main__':
     app.run(debug=True)

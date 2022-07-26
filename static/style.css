@@ -1,11 +1,65 @@
+html, body {
+    margin:0;
+    padding:0;
+}
+
+#wrapper {
+    display: grid;
+    grid-auto-rows: minmax(100px, auto);
+    background-color: aqua;
+}
+
+#header {
+    grid-row: 1 / 2;
+    background-color: lightblue;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+}
+
+#logo {
+    grid-area: 1 / 1 / 2 / 2;
+}
+
+#main {
+    grid-row: 2 / 8;
+    display: grid;
+    grid-auto-rows: minmax(100px, auto);
+    grid-template-columns: repeat(9, 1fr);
+}
+
 #footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 50px;
-    background-color: gainsboro;
+    grid-row: 8 / 9;
+    background-color: plum;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+}
+
+#content {
+    grid-area: 1 / 3 / 4 / 10;
+    background-color: bisque;
+}
+
+#signup {
+    grid-area: 1 / 5 / 4 / 6;
+    justify-items: center;
+}
+
+#login {
+    grid-area: 1 / 5 / 4 / 6;
+    justify-items: center;
 }
 
 input {
     margin: 20px;
+}
+
+#sidenav {
+    grid-area: 1 / 1 / 4 / 3;
+    background-color: yellow;
+}
+
+
+
+#userOpts {
+    grid-column: 9 / 10;
 }

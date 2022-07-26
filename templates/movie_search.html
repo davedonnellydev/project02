@@ -1,0 +1,30 @@
+{% if user['user_id'] %}
+    <button id="movieSearchButton" title="Add movie">+</button>
+
+    <form id="movieSearchForm" method="get" style="display: none;">
+        <label for="movieSearch">Search: </label>
+        <input type="text" name="query" id="movieSearch" {% if query %} value="{{ query }}" {% endif %}>
+        <button type="submit">Search</button>
+    </form>
+{% endif %}
+
+{% if results and results['total_results']|int > 0 %}
+    <form action="/add_movie" method="post">
+        <label for="lists">Select which lists to add the movies to:</label>
+        <select name="lists" id="lists" multiple>
+            {% for list in list_of_lists %} <option value="{{ list[0] }}">{{ list[2] }}</option>{% endfor %}
+        </select>
+        {% for item in results['results'] %}
+            <div class="movie_option">
+                <input type="checkbox" id="{{item['imdb_id']}}" name="movie_id" value="{{item['id']}}">
+                <label for="{{item['imdb_id']}}">{{item['title']}} ({{item['release_date']}}) - {{item['overview']}}</label>
+            </div>
+        {% endfor %}
+        <input type="hidden" name="userpage" value="{{ userpage }}">
+        <button type="submit">Add</button>
+    </form>
+{% elif results and results['total_results']|int == 0 %}
+    <p><em>No movies found with that title</em></p>
+{% else %}
+
+{% endif %}

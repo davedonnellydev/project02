@@ -3,6 +3,8 @@
 
 {% block content %}
 
+{% include 'sidenav.html' %}
+
 <form action="/create_list" method="post">
     <label for="list_name">List name:</label>
     <input type="text" id="list_name" name="list_name">

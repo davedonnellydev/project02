@@ -3,6 +3,7 @@ import psycopg2
 import bcrypt
 import requests
 import creds
+from flask import session
 
 salt = bcrypt.gensalt()
 
@@ -10,33 +11,6 @@ local_apikey = creds.api_key
 
 DATABASE_URL = os.environ.get('DATABASE_URL', 'dbname=movie_list')
 API_KEY = os.environ.get('API_KEY', local_apikey)
-
-def test():
-    connection = psycopg2.connect(DATABASE_URL)
-    cursor = connection.cursor()
-    cursor.execute("SELECT 1")
-    connection.close()
-
-def movie_search(query):
-    params = {
-        "api_key": local_apikey,
-        "language": "en-US",
-        "page": 1,
-        "include_adult": "true",
-        "query": query
-    }
-    response = requests.get("https://api.themoviedb.org/3/search/movie", params=params)
-    result = response.json()
-    return result
-
-def get_movie_info(movie_id):
-    params = {
-        "api_key": local_apikey,
-        "language": "en-US"
-    }
-    response = requests.get(f"https://api.themoviedb.org/3/movie/{movie_id}", params=params)
-    result = response.json()
-    return result
 
 def check_user(email, username):
     check = {}
@@ -66,7 +40,6 @@ def create_new_user(username,fname,lname,email,password):
     conn.commit()
     conn.close()
 
-
 def check_password(string, hashed_string):
     return bcrypt.checkpw(string.encode(), hashed_string.encode())
 
@@ -74,13 +47,43 @@ def check_password(string, hashed_string):
 def authenticate_user(username):
     conn = psycopg2.connect(DATABASE_URL)
     cur = conn.cursor()
-    cur.execute('SELECT password, id FROM users WHERE username = %s;', [username])
+    cur.execute('SELECT * FROM users WHERE username = %s;', [username])
     results = cur.fetchall()
-    db_password = dict()
-    db_password['rowCount'] = cur.rowcount
-    db_password['pwResults'] = results
-    return db_password
+    user_data = dict()
+    user_data['rowCount'] = cur.rowcount
+    user_data['results'] = results
+    return user_data
 
+def get_session_data():
+    user = dict()
+    if 'username' in session:
+        user['user_id'] = session['user_id']
+        user['username'] = session['username']
+        user['user_email'] = session['user_email']
+        user['user_fname'] = session['user_fname']
+        user['user_lname'] = session['user_lname']
+    return user
+
+def movie_search(query):
+    params = {
+        "api_key": local_apikey,
+        "language": "en-US",
+        "page": 1,
+        "include_adult": "true",
+        "query": query
+    }
+    response = requests.get("https://api.themoviedb.org/3/search/movie", params=params)
+    result = response.json()
+    return result
+
+def get_movie_info(movie_id):
+    params = {
+        "api_key": local_apikey,
+        "language": "en-US"
+    }
+    response = requests.get(f"https://api.themoviedb.org/3/movie/{movie_id}", params=params)
+    result = response.json()
+    return result
 
 def create_new_list(user_id,list_name,private):
     conn = psycopg2.connect(DATABASE_URL)
@@ -105,7 +108,7 @@ def get_list_data(userpage):
 def get_list_items(list_id):
     conn = psycopg2.connect(DATABASE_URL)
     cur = conn.cursor()
-    cur.execute('SELECT * FROM list_items WHERE lists_id = %s;', [list_id])
+    cur.execute('SELECT * FROM list_items l JOIN movies m ON l.movie_id=m.id WHERE lists_id = %s;', [list_id])
     results = cur.fetchall()
     return results
 

@@ -3,10 +3,12 @@
 
 {% block content %}
 
-<form action="/authenticate" method="post">
-    <input type="text" name="username" id="username" placeholder="Username" value="{% if username %}{{ username }}{% endif %}">
-    <input type="password" name="password" id="password" placeholder="Password">
-    <button type="submit">Login</button>
-</form>
+<div id="login">
+    <form action="/authenticate" method="post">
+        <input type="text" name="username" id="username" placeholder="Username" value="{% if username %}{{ username }}{% endif %}">
+        <input type="password" name="password" id="password" placeholder="Password">
+        <button type="submit">Login</button>
+    </form>
+</div>
 
 {% endblock %}

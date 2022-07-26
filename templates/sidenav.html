@@ -1,0 +1,11 @@
+<div id="sidenav">
+    <ul>
+        {% for list in list_of_lists %}
+            <li><form action="/user/{{ userpage }}/list/{{ list[0] }}" method="post"><button type="submit">{{ list[2] }}</button></form></li>
+        {% endfor %}
+    </ul>
+
+    {% if user['user_id'] %}
+        <form action="/new_list" method="post"><button type="submit">Add new list</button></form>
+    {% endif %}
+</div>
