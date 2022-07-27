@@ -63,3 +63,29 @@ input {
 #userOpts {
     grid-column: 9 / 10;
 }
+
+.list_item {
+    display: grid;
+    grid-template-columns: 0.5fr 5fr;
+    align-items: center;
+}
+
+.list_item > input {
+    grid-column: 1 / 2;
+}
+
+.list_item > label {
+    grid-column: 2 / 3;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.poster {
+    grid-column: 1 / 2;
+    justify-self: center;
+    align-self: center;
+}
+
+.movie_info {
+    grid-column: 2 / 5;
+}
