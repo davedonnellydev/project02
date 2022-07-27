@@ -1,0 +1,35 @@
+{% if list_items %}
+<h2>list details:</h2>
+
+<form action="/delete_multiple" method="post">
+    {% for item in list_items %}
+    <div class="list_item multi">
+        <input type="checkbox" name="list_item" value="{{ item[0] }}" id="{{ item[0] }}" >
+        <label for="{{ item[0] }}">
+            <img class="poster" src="https://image.tmdb.org/t/p/w500{{ item[15] }}" width="100px">
+            <p class="movie_info"><strong>{{ item[9] }}</strong> ({{ item[10] }})<br><em>{{ item[11] }}</em><br>
+                {{ item[12] }} (runtime: {{ item[13] }} mins)
+            </p>
+            <p class="user_info">{{ item[5] }}<br>
+            {{ item[4] }}/5</p>
+            <div class="buttons">
+                <form action="/watched" method="post">
+                    <input type="hidden" name="watched" value="{{ item[0] }}">
+                    <button class="watched">Watched</button>
+                </form>
+                <form action="/edit" method="post">
+                    <input type="hidden" name="edit" value="{{ item[0] }}">
+                    <button class="edit">Edit</button>
+                </form>
+                <form action="/delete_single" method="post">
+                    <input type="hidden" name="delete" value="{{ item[0] }}">
+                    <button class="delete">Delete</button>
+                </form>
+            </div>
+        </label>
+    </div>
+    {% endfor %}
+    <button type="submit">Delete selected</button>
+</form>
+
+{% endif %}

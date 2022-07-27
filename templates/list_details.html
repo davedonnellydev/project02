@@ -1,19 +1,84 @@
 {% if list_items %}
-<h2>list details:</h2>
 
-<form>
+<h2>list details:</h2>
     {% for item in list_items %}
-    <div class="list_item">
-        <input type="checkbox" name="list_item" value="{{ item[0] }}" id="{{ item[0] }}" >
-        <label for="{{ item[0] }}">
-            <img class="poster" src="https://image.tmdb.org/t/p/w500{{ item[15] }}" width="100px">
-            <p class="movie_info"><strong>{{ item[9] }}</strong> ({{ item[10] }})<br><em>{{ item[11] }}</em><br>
-                {{ item[12] }} (runtime: {{ item[13] }} mins)
-            </p>
-        </label>
+    <div class="list_item indiv">
+        <img class="poster" src="https://image.tmdb.org/t/p/w500{{ item[15] }}" width="100px">
+        <p class="movie_info"><strong>{{ item[9] }}</strong> ({{ item[10] }})<br><em>{{ item[11] }}</em><br>
+            {{ item[12] }} (runtime: {{ item[13] }} mins)
+        </p>
+        {% if user['user_id'] and edit|int == item[0]|int %}
+        <form action="/confirm_edits" method="post" class="user_info">
+            <textarea width="100" height="2" maxlength="200" name="notes">{{ item[5] }}</textarea>
+            <!-- <label for="rating">Rating out of 5:</label> -->
+            <select name="rating" id="rating">
+                <option value="5" {% if item[4] == 5 %}selected{% endif %}>5</option>
+                <option value="4" {% if item[4] == 4 %}selected{% endif %}>4</option>
+                <option value="3" {% if item[4] == 3 %}selected{% endif %}>3</option>
+                <option value="2" {% if item[4] == 2 %}selected{% endif %}>2</option>
+                <option value="1" {% if item[4] == 1 %}selected{% endif %}>1</option>
+            </select>/5<br>
+            <label for="watched_date">Watched date:</label>
+            <input type="date" id="watched_date" name="watched_date" value="{{ item[3] }}">
+            <input type="hidden" name="list_item_id" value="{{ item[0] }}">
+            <input type="hidden" name="list_id" value="{{ item[1] }}">
+            <button type="submit">Update</button>
+        </form>
+        {% elif edit|int != item[0]|int %}
+        <p class="user_info">{{ item[5] }}<br>
+        {{ item[4] }}/5</p>
+        {% endif %}
+        <div class="controls">
+            {% if item[3] %}
+            <p>Watched on {{ item[3] }}</p>
+            {% else %}
+                {% if user['user_id'] and not(edit) %}
+                    <form action="/watched" class="watched" method="post">
+                        <input type="hidden" name="list_item_id" value="{{ item[0] }}">
+                        <input type="hidden" name="list_id" value="{{ item[1] }}">
+                        <input type="hidden" name="movie_id" value="{{ item[2] }}">
+                        <input type="hidden" class="watched_date" name="watched_date">
+                        <button>Watched</button>
+                    </form>
+                {% else %}
+                    <p>Not yet watched.</p>
+                {% endif %}
+            {% endif %}
+            {% if user['user_id'] and edit|int == item[0]|int %}
+            <p>edit on</p>
+            {% elif user['user_id'] and edit|int != item[0]|int %}
+            <form action="/edit_list_item" class="edit" method="post">
+                <input type="hidden" name="list_item_id" value="{{ item[0] }}">
+                <input type="hidden" name="list_id" value="{{ item[1] }}">
+                <input type="hidden" name="movie_id" value="{{ item[2] }}">
+                <button>Edit</button>
+            </form>
+            {% endif %}
+            {% if user['user_id'] and edit|int == item[0]|int %}
+            {% elif user['user_id'] and edit|int != item[0]|int %}
+            <form action="/delete_single" class="delete" method="post">
+                <input type="hidden" name="list_item_id" value="{{ item[0] }}">
+                <input type="hidden" name="list_id" value="{{ item[1] }}">
+                <input type="hidden" name="movie_id" value="{{ item[2] }}">
+                <button>Delete</button>
+            </form>
+            {% endif %}
+        </div>
     </div>
     {% endfor %}
-    <button type="submit">Delete selected</button>
-</form>
 
 {% endif %}
+
+{% block pageScript %}
+<script>
+document.querySelectorAll('.watched_date').forEach(appendDate)
+function appendDate(el) {
+    const date = new Date();
+    let day = ('0' + date.getDate()).slice(-2);
+    let month = ('0' + (date.getMonth() + 1)).slice(-2);
+    let year = date.getFullYear();
+    let currentDate = `${year}-${month}-${day}`;
+    el.value = currentDate;
+}
+</script>
+{% endblock %}

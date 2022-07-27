@@ -61,3 +61,24 @@ The following images are basic wireframes built to both illustrate function and 
 ### User homepage (not logged in), public facing
 
 ![user homepage public view wireframe](static/img/9_user_page_public_view.jpeg)
+
+
+## TO DO:
+- User settings page (Update password, email, first name, last name etc)
+- Scroll functionality in sidebar
+- Scroll functionality in main
+- Cookies/Session expiration when closing tab/after a time
+- make private lists only show to user
+- edit/delete list data
+- when logging in/out, go back to the page the person was originally on
+- rating: custom list order? / order by rating / by watched date / alphabetically
+
+## Functions:
+
+- users can create an account linked to a unique username so that their lists can be shared publically
+- users can create an unlimited number of lists
+- users can choose whether a list is public or private
+- users can add any movie to their list, which will display the name, release date, tagline, overview and runtime of the movie
+- users can mark when they've watched a film
+- users can add notes, a rating and edit their 'watched date' for any film
+- users can delete individual films from their lists

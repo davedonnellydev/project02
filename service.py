@@ -149,3 +149,35 @@ def add_movie_to_list(list_id,movie_id):
         error = 'List item already exists'
     conn.close()
     return error
+
+def mark_as_watched(watched_date,list_item_id):
+    conn = psycopg2.connect(DATABASE_URL)
+    cur = conn.cursor()
+    cur.execute('''
+    UPDATE list_items
+    SET watched=%s
+    WHERE id=%s;
+    ''', [watched_date,list_item_id])
+    conn.commit()
+    conn.close()
+
+def delete_item(list_item_id):
+    conn = psycopg2.connect(DATABASE_URL)
+    cur = conn.cursor()
+    cur.execute('''
+    DELETE FROM list_items
+    WHERE id=%s;
+    ''', [list_item_id])
+    conn.commit()
+    conn.close()
+
+def update_list_item(watched_date,rating,notes,list_item_id):
+    conn = psycopg2.connect(DATABASE_URL)
+    cur = conn.cursor()
+    cur.execute('''
+    UPDATE list_items
+    SET watched=%s, rating=%s, notes=%s
+    WHERE id=%s;
+    ''', [watched_date,rating,notes,list_item_id])
+    conn.commit()
+    conn.close()

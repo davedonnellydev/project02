@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, session
 import os
-import psycopg2
 import service
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'b2d3de63a3d45dc05e53d717e8074103')
@@ -11,7 +10,11 @@ app.config["SECRET_KEY"] = SECRET_KEY
 @app.route('/')
 def index():
     user = service.get_session_data()
-    return render_template('index.html', user=user)
+    if user:
+        username = user['username']
+        return redirect(f"/user/{username}")
+    else:
+        return redirect("/login")
 
 @app.route('/signup')
 def signup():
@@ -126,9 +129,50 @@ def display_list(userpage,list_id):
         results = service.movie_search(query)
     else:
         results = None
+    edit = request.args.get('edit')
     list_of_lists = service.get_list_data(userpage)
     list_items = service.get_list_items(list_id)
-    return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists, list_id=list_id, list_items=list_items)
+    return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists, list_id=list_id, list_items=list_items, edit=edit)
+
+@app.route('/watched', methods=['POST'])
+def watched():
+    user = service.get_session_data()
+    username = user['username']
+    watched_date = request.form.get('watched_date')
+    list_item_id = request.form.get('list_item_id')
+    list_id = request.form.get('list_id')
+    service.mark_as_watched(watched_date,list_item_id)
+    return redirect(f"user/{username}/list/{list_id}")
+
+@app.route('/delete_single', methods=['POST'])
+def delete_single():
+    user = service.get_session_data()
+    username = user['username']
+    list_item_id = request.form.get('list_item_id')
+    list_id = request.form.get('list_id')
+    service.delete_item(list_item_id)
+    return redirect(f"user/{username}/list/{list_id}")
+
+@app.route('/edit_list_item', methods=['POST'])
+def edit_list_item():
+    user = service.get_session_data()
+    username = user['username']
+    list_item_id = request.form.get('list_item_id')
+    list_id = request.form.get('list_id')
+    return redirect(f"user/{username}/list/{list_id}?edit={list_item_id}")
+
+@app.route('/confirm_edits', methods=['POST'])
+def confirm_edits():
+    user = service.get_session_data()
+    username = user['username']
+    list_item_id = request.form.get('list_item_id')
+    list_id = request.form.get('list_id')
+    watched_date = request.form.get('watched_date')
+    rating = request.form.get('rating')
+    notes = request.form.get('notes')
+    service.update_list_item(watched_date, rating, notes, list_item_id)
+    return redirect(f"user/{username}/list/{list_id}")
+
 
 if __name__ == '__main__':
     app.run(debug=True)

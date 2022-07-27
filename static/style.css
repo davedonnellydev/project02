@@ -1,3 +1,5 @@
+/* BASE.HTML */
+
 html, body {
     margin:0;
     padding:0;
@@ -7,6 +9,8 @@ html, body {
     display: grid;
     grid-auto-rows: minmax(100px, auto);
     background-color: aqua;
+    width: 100%;
+    height: 100%;
 }
 
 #header {
@@ -18,6 +22,10 @@ html, body {
 
 #logo {
     grid-area: 1 / 1 / 2 / 2;
+}
+
+#userOpts {
+    grid-column: 9 / 10;
 }
 
 #main {
@@ -34,58 +42,102 @@ html, body {
     grid-template-columns: repeat(9, 1fr);
 }
 
+/* USERHOME.HTML */
+
 #content {
     grid-area: 1 / 3 / 4 / 10;
     background-color: bisque;
 }
+
+/* SIGNUP.HTML */
 
 #signup {
     grid-area: 1 / 5 / 4 / 6;
     justify-items: center;
 }
 
+/* LOGIN.HTML */
+
 #login {
     grid-area: 1 / 5 / 4 / 6;
     justify-items: center;
 }
 
-input {
+#login input {
     margin: 20px;
 }
+
+/* SIDENAV.HTML */
 
 #sidenav {
     grid-area: 1 / 1 / 4 / 3;
     background-color: yellow;
 }
 
-
-
-#userOpts {
-    grid-column: 9 / 10;
-}
+/* LIST_DETAILS.HTML & LIST_DETAILS_MULTIPLE.HTML */
 
 .list_item {
-    display: grid;
-    grid-template-columns: 0.5fr 5fr;
     align-items: center;
+    border: 2px solid black;
 }
 
-.list_item > input {
-    grid-column: 1 / 2;
-}
+/* LIST_DETAILS.HTML */
 
-.list_item > label {
-    grid-column: 2 / 3;
+.list_item.indiv {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: 1fr 3fr 1fr;
+    grid-template-rows: 2fr;
 }
 
-.poster {
+.list_item.indiv img {
     grid-column: 1 / 2;
+    grid-row: 1 / 3;
     justify-self: center;
     align-self: center;
 }
 
-.movie_info {
-    grid-column: 2 / 5;
+.list_item.indiv > .movie_info {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    margin: 10px 0;
+}
+
+.list_item.indiv > .user_info {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    margin: 10px 0;
+}
+
+.controls {
+    grid-column: 3 / 4;
+    grid-row: 1 / 3;
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    justify-content: space-around;
+    align-content: space-around;
+}
+
+.controls button {
+    display: block;
+    align-self: center;
+}
+
+/* LIST_DETAILS_MULTIPLE.HTML */
+
+.list_item.multi {
+    display: grid;
+    grid-template-columns: 0.2 5fr;
+    align-items: center;
+    border: 2px solid black;
+}
+
+.list_item.multi > input {
+    grid-column: 1 / 2;
+}
+
+.list_item.multi > label {
+    grid-column: 2 / 3;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
 }

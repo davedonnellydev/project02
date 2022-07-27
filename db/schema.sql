@@ -38,7 +38,7 @@ CREATE TABLE list_items (
     id SERIAL PRIMARY KEY,
     lists_id INTEGER NOT NULL REFERENCES lists(id),
     movie_id INTEGER NOT NULL REFERENCES movies(id),
-    watched BOOLEAN,
+    watched DATE,
     rating INTEGER,
     notes TEXT
     );
