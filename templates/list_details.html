@@ -7,7 +7,7 @@
         <p class="movie_info"><strong>{{ item[9] }}</strong> ({{ item[10] }})<br><em>{{ item[11] }}</em><br>
             {{ item[12] }} (runtime: {{ item[13] }} mins)
         </p>
-        {% if user['user_id'] and edit|int == item[0]|int %}
+        {% if user['username'] == userpage and edit|int == item[0]|int %}
         <form action="/confirm_edits" method="post" class="user_info">
             <textarea width="100" height="2" maxlength="200" name="notes">{{ item[5] }}</textarea>
             <!-- <label for="rating">Rating out of 5:</label> -->
@@ -32,7 +32,7 @@
             {% if item[3] %}
             <p>Watched on {{ item[3] }}</p>
             {% else %}
-                {% if user['user_id'] and not(edit) %}
+                {% if user['username'] == userpage and not(edit) %}
                     <form action="/watched" class="watched" method="post">
                         <input type="hidden" name="list_item_id" value="{{ item[0] }}">
                         <input type="hidden" name="list_id" value="{{ item[1] }}">
@@ -44,9 +44,9 @@
                     <p>Not yet watched.</p>
                 {% endif %}
             {% endif %}
-            {% if user['user_id'] and edit|int == item[0]|int %}
+            {% if user['username'] == userpage and edit|int == item[0]|int %}
             <p>edit on</p>
-            {% elif user['user_id'] and edit|int != item[0]|int %}
+            {% elif user['username'] == userpage and edit|int != item[0]|int %}
             <form action="/edit_list_item" class="edit" method="post">
                 <input type="hidden" name="list_item_id" value="{{ item[0] }}">
                 <input type="hidden" name="list_id" value="{{ item[1] }}">
@@ -54,8 +54,8 @@
                 <button>Edit</button>
             </form>
             {% endif %}
-            {% if user['user_id'] and edit|int == item[0]|int %}
-            {% elif user['user_id'] and edit|int != item[0]|int %}
+            {% if user['username'] == userpage and edit|int == item[0]|int %}
+            {% elif user['username'] == userpage and edit|int != item[0]|int %}
             <form action="/delete_single" class="delete" method="post">
                 <input type="hidden" name="list_item_id" value="{{ item[0] }}">
                 <input type="hidden" name="list_id" value="{{ item[1] }}">

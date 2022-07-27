@@ -62,16 +62,20 @@ The following images are basic wireframes built to both illustrate function and 
 
 ![user homepage public view wireframe](static/img/9_user_page_public_view.jpeg)
 
+## BUGS!
+
+- user/list link combo works even when the list doesn't belong to the user. In some instances this would result in user being able to edit other user's lists.
+
 
 ## TO DO:
-- User settings page (Update password, email, first name, last name etc)
-- Scroll functionality in sidebar
-- Scroll functionality in main
-- Cookies/Session expiration when closing tab/after a time
 - make private lists only show to user
 - edit/delete list data
 - when logging in/out, go back to the page the person was originally on
 - rating: custom list order? / order by rating / by watched date / alphabetically
+- User settings page (Update password, email, first name, last name etc)
+- Scroll functionality in sidebar
+- Scroll functionality in main
+- Cookies/Session expiration when closing tab/after a time
 
 ## Functions:
 

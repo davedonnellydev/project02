@@ -18,6 +18,7 @@ def index():
 
 @app.route('/signup')
 def signup():
+    user = service.get_session_data()
     if 'userExists' in session:
         userExists = session['userExists']
     else:
@@ -26,7 +27,7 @@ def signup():
         emailExists = session['emailExists']
     else:
         emailExists = False
-    return render_template('signup.html', userExists=userExists, emailExists=emailExists)
+    return render_template('signup.html', userExists=userExists, emailExists=emailExists, user=user)
 
 @app.route('/check_new_user', methods=['POST'])
 def check_new_user():
@@ -47,12 +48,13 @@ def check_new_user():
     else:
         hashed_password = service.encrypt_password(password)
         service.create_new_user(username,fname,lname,email,hashed_password)
-        return render_template('login.html', username=username)
+        return redirect(f'/login?username={username}')
 
 @app.route('/login')
 def login():
     user = service.get_session_data()
-    return render_template("login.html", user=user)
+    username = request.args.get('username')
+    return render_template("login.html", user=user, username=username)
 
 @app.route('/authenticate', methods=['POST'])
 def authenticate():
