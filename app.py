@@ -93,7 +93,7 @@ def user_page(userpage):
         results = service.movie_search(query)
     else:
         results = None
-    list_of_lists = service.get_list_data(userpage)
+    list_of_lists = service.get_user_list_data(userpage)
     return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists)
 
 
@@ -132,9 +132,10 @@ def display_list(userpage,list_id):
     else:
         results = None
     edit = request.args.get('edit')
-    list_of_lists = service.get_list_data(userpage)
+    list_of_lists = service.get_user_list_data(userpage)
+    list_data = service.get_list_data(list_id)
     list_items = service.get_list_items(list_id)
-    return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists, list_id=list_id, list_items=list_items, edit=edit)
+    return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists, list_id=list_id, list_items=list_items, list_data=list_data, edit=edit)
 
 @app.route('/watched', methods=['POST'])
 def watched():
@@ -173,6 +174,44 @@ def confirm_edits():
     rating = request.form.get('rating')
     notes = request.form.get('notes')
     service.update_list_item(watched_date, rating, notes, list_item_id)
+    return redirect(f"user/{username}/list/{list_id}")
+
+@app.route('/settings', methods=['GET','POST'])
+def settings():
+    user = service.get_session_data()
+    return render_template('settings.html', user=user)
+
+@app.route('/update_safe_settings', methods=['POST'])
+def update_safe_settings():
+    user_email = request.form.get('email')
+    fname = request.form.get('fname')
+    lname = request.form.get('lname')
+    user_id = session['user_id']
+    username = session['username']
+    service.update_settings(user_email,fname,lname,user_id)
+    session.clear()
+    user_data = service.authenticate_user(username)
+    session["user_id"] = user_data['results'][0][0]
+    session["username"] = user_data['results'][0][1]
+    session["user_email"] = user_data['results'][0][2]
+    session["user_fname"] = user_data['results'][0][3]
+    session["user_lname"] = user_data['results'][0][4]
+    return redirect("/settings")
+
+
+@app.route('/edit_list/<list_id>', methods=['GET', 'POST'])
+def edit_list(list_id):
+    user = service.get_session_data()
+    list_data = service.get_list_data(list_id)
+    return render_template('edit_list.html', user=user, list_data=list_data)
+
+@app.route('/update_list', methods=['POST'])
+def update_list():
+    list_id = request.form.get('list_id')
+    list_name = request.form.get('list_name')
+    private = request.form.get('private')
+    username = session['username']
+    service.update_list_data(list_name,private,list_id)
     return redirect(f"user/{username}/list/{list_id}")
 
 

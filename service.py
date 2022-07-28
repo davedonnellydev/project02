@@ -95,13 +95,20 @@ def create_new_list(user_id,list_name,private):
     conn.commit()
     conn.close()
 
-def get_list_data(userpage):
+def get_user_list_data(userpage):
     conn = psycopg2.connect(DATABASE_URL)
     cur = conn.cursor()
     cur.execute('SELECT id FROM users WHERE username = %s;', [userpage])
     result = cur.fetchall()
     user_id = result[0]
     cur.execute('SELECT * FROM lists WHERE user_id = %s;', [user_id])
+    results = cur.fetchall()
+    return results
+
+def get_list_data(list_id):
+    conn = psycopg2.connect(DATABASE_URL)
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM lists WHERE id = %s;', [list_id])
     results = cur.fetchall()
     return results
 
@@ -179,5 +186,27 @@ def update_list_item(watched_date,rating,notes,list_item_id):
     SET watched=%s, rating=%s, notes=%s
     WHERE id=%s;
     ''', [watched_date,rating,notes,list_item_id])
+    conn.commit()
+    conn.close()
+
+def update_settings(user_email,fname,lname,user_id):
+    conn = psycopg2.connect(DATABASE_URL)
+    cur = conn.cursor()
+    cur.execute('''
+    UPDATE users
+    SET email=%s, fname=%s, lname=%s
+    WHERE id=%s;
+    ''', [user_email,fname,lname,user_id])
+    conn.commit()
+    conn.close()
+
+def update_list_data(list_name,private,list_id):
+    conn = psycopg2.connect(DATABASE_URL)
+    cur = conn.cursor()
+    cur.execute('''
+    UPDATE lists
+    SET list_name=%s, priv=%s
+    WHERE id=%s;
+    ''', [list_name,private,list_id])
     conn.commit()
     conn.close()

@@ -1,10 +1,12 @@
 {% if list_items %}
 
-<h2>list details:</h2>
+<div id="list_header">
+    <h2>{{ list_data[0][2] }}</h2>
+</div>
     {% for item in list_items %}
     <div class="list_item indiv">
         <img class="poster" src="https://image.tmdb.org/t/p/w500{{ item[15] }}" width="100px">
-        <p class="movie_info"><strong>{{ item[9] }}</strong> ({{ item[10] }})<br><em>{{ item[11] }}</em><br>
+        <p class="movie_info"><span class="movie_title">{{ item[9] }}</span> ({{ item[10] }})<br><span class="tagline"><em>{{ item[11] }}</em></span><br>
             {{ item[12] }} (runtime: {{ item[13] }} mins)
         </p>
         {% if user['username'] == userpage and edit|int == item[0]|int %}

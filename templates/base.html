@@ -4,12 +4,15 @@
     {% block head %}
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    {% endblock %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400&family=Philosopher:wght@700&family=Plus+Jakarta+Sans&display=swap" rel="stylesheet"
+{% endblock %}
 </head>
 <body>
         <div id="wrapper">
             <div id="header">
-                <h1 id="logo"><a href="/">A-lister</a></h1>
+                <a href="/"><h1 id="logo">A-lister</h1></a>
                 {% block header %}
                     <div id="userOpts">
                             {% if user['user_id'] %}
@@ -28,7 +31,7 @@
             <div id="footer">
                 {% block footer %}
                 <script src="{{ url_for('static', filename='script.js') }}"></script>
-                &copy; Copyright 2022 by <a href="https://github.com/davebdev">Dave Buckley</a>.
+                <p>&copy; Copyright 2022 by <a href="https://github.com/davebdev">Dave Buckley</a></p>
 
                 {% block pageScript %}{% endblock %}
                 {% endblock %}

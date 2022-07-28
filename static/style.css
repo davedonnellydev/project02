@@ -1,5 +1,7 @@
 /* BASE.HTML */
 
+* {box-sizing:border-box;}
+
 html, body {
     margin:0;
     padding:0;
@@ -8,20 +10,39 @@ html, body {
 #wrapper {
     display: grid;
     grid-auto-rows: minmax(100px, auto);
-    background-color: aqua;
+    background-color: #4d6caa;
     width: 100%;
     height: 100%;
+    font-family: 'Inter', sans-serif;
+    font-weight: 200;
+    color: #faf1d1;
 }
 
 #header {
     grid-row: 1 / 2;
-    background-color: lightblue;
+    background-color: #194b71;
     display: grid;
     grid-template-columns: repeat(9, 1fr);
 }
 
+h1, h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: #faf1d1;
+}
+
+a:hover {
+    color: #ffeeb0;
+}
+
 #logo {
-    grid-area: 1 / 1 / 2 / 2;
+    grid-area: 1 / 1 / 2 / 5;
+    font-size: 46px;
+    font-family: 'Philosopher', sans-serif;
+    text-align: center;
 }
 
 #userOpts {
@@ -32,34 +53,41 @@ html, body {
     grid-row: 2 / 8;
     display: grid;
     grid-auto-rows: minmax(100px, auto);
-    grid-template-columns: repeat(9, 1fr);
+    grid-template-columns: repeat(12, 1fr);
+    position: relative;
+    min-height: 75vh;
+    margin: 0 0 100px 0;
 }
 
 #footer {
     grid-row: 8 / 9;
-    background-color: plum;
+    background-color: #194b71;
     display: grid;
-    grid-template-columns: repeat(9, 1fr);
+    grid-template-columns: repeat(11, 1fr);
+    position: fixed;
+    bottom: 0;
 }
 
 /* USERHOME.HTML */
 
 #content {
-    grid-area: 1 / 3 / 4 / 10;
-    background-color: bisque;
+    grid-area: 1 / 3 / 4 / 12;
+    max-height: 100%;
+    background-color: #7795d1;
+    border-radius: 0 0 25px 25px;
 }
 
 /* SIGNUP.HTML */
 
 #signup {
-    grid-area: 1 / 5 / 4 / 6;
+    grid-area: 1 / 6 / 4 / 7;
     justify-items: center;
 }
 
 /* LOGIN.HTML */
 
 #login {
-    grid-area: 1 / 5 / 4 / 6;
+    grid-area: 1 / 6 / 4 / 7;
     justify-items: center;
 }
 
@@ -71,14 +99,40 @@ html, body {
 
 #sidenav {
     grid-area: 1 / 1 / 4 / 3;
-    background-color: yellow;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-height: 100%;
+}
+
+#sidenav ul {
+    list-style-position: inside;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#side-controls{
+    margin: 70px 0 0 0;
 }
 
 /* LIST_DETAILS.HTML & LIST_DETAILS_MULTIPLE.HTML */
 
+#list_edit {
+    grid-column: 11 / 13;
+}
+
+#list_header {
+    text-align: center;
+}
+
 .list_item {
     align-items: center;
-    border: 2px solid black;
+    border: 2px solid #4d6caa;
+    background-color: #faf1d1;
+    color: #4d6caa;
+    border-radius: 25px;
+    margin: 20px;
 }
 
 /* LIST_DETAILS.HTML */
@@ -100,6 +154,15 @@ html, body {
     grid-column: 2 / 3;
     grid-row: 1 / 2;
     margin: 10px 0;
+}
+
+.movie_title {
+    font-size: 18px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.tagline {
+    font-weight: 400;
 }
 
 .list_item.indiv > .user_info {
@@ -140,4 +203,73 @@ html, body {
     grid-column: 2 / 3;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
+}
+
+/* button restyling found at https://css-tricks.com/overriding-default-button-styles/ */
+
+button {
+    display: inline-block;
+    border: none;
+    padding: 0.5rem 0.5rem;
+    margin: 10px;
+    border-radius: 10px;
+    min-width: 200px;
+    background-color: #faf1d1;
+    color: #4d6caa;
+    text-decoration: none;
+    font-size: 1rem;
+    cursor: pointer;
+    text-align: center;
+    transition: background 50ms ease-in-out,
+                transform 150ms ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.list_item button {
+    background-color: #4d6caa;
+    color: #faf1d1;
+}
+
+button:hover,
+button:focus {
+    background: #fffae8;
+}
+
+.list_item button:hover,
+.list_item button:focus {
+    background: #7795d1;
+}
+
+button:focus {
+    outline: 1px solid #fff;
+    outline-offset: -4px;
+}
+
+button:active {
+    transform: scale(0.99);
+}
+
+/* SETTINGS.HTML */
+
+#safe_settings {
+    grid-area: 1/ 5 / 3 / 9;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#safe_settings input,label {
+    display: block;
+}
+
+#password_settings {
+    grid-area: 3/ 5 / 5 / 9;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#password_settings input,label {
+    display: block;
 }
