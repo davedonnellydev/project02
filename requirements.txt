@@ -3,5 +3,4 @@ psycopg2
 bcrypt
 gunicorn
 requests
-creds
 service

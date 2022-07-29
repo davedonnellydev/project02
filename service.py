@@ -2,12 +2,12 @@ import os
 import psycopg2
 import bcrypt
 import requests
-import creds
+import credentials
 from flask import session
 
 salt = bcrypt.gensalt()
 
-local_apikey = creds.api_key
+local_apikey = credentials.api_key
 
 DATABASE_URL = os.environ.get('DATABASE_URL', 'dbname=movie_list')
 API_KEY = os.environ.get('API_KEY', local_apikey)
