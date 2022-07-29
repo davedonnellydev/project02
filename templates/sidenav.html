@@ -7,7 +7,7 @@
 {% else %}
 {% endif %}
 
-{% if user['username'] == userpage %}
+{% if user['username'] == userpage and user %}
     <div id="side-controls">
         <form action="/new_list" method="post"><button type="submit">Add new list</button></form>
 
