@@ -4,6 +4,4 @@ bcrypt
 gunicorn
 requests
 creds
-os
 service
-datetime
