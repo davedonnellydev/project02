@@ -32,6 +32,10 @@
     </form>
 {% elif results and results['total_results']|int == 0 %}
     <p><em>No movies found with that title</em></p>
+    <form>
+        <input type="hidden" name="searchAgain" value="true">
+        <button type="submit">Search again</button>
+    </form>
 {% else %}
 
 {% block pageScript %}
@@ -39,12 +43,17 @@
     const addMovieButton = document.getElementById("movieSearchButton");
     const searchMoviesForm = document.getElementById("movieSearchForm");
 
-    addMovieButton.addEventListener("click", revealSearchForm);
+    addMovieButton.addEventListener("click", showSearchForm);
 
-    function revealSearchForm() {
+    function showSearchForm() {
     searchMoviesForm.style.display = "block";
     }
 </script>
+{% if searchAgain == 'true' %}
+<script>
+showSearchForm();
+</script>
+{% endif %}
 {% endblock %}
 
 {% endif %}

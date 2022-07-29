@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 {% block title %}{{ userpage }}'s Movies{% endblock %}
 
+{% block sidenav_heading %}{{ userpage }}'s lists{% endblock %}
+
 {% block content %}
-
-{% include 'sidenav.html' %}
-
     <div id="content">
         {% if list_of_lists and not list_id %}
         <h2><--- Click on a list to view</h2>

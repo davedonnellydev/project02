@@ -64,12 +64,11 @@ The following images are basic wireframes built to both illustrate function and 
 
 ## BUGS!
 
--logging in from other pages sometimes bugs out
+-No bugs currently found
 
 ## TO DO:
 - sharable link copied to clipboard
 - rating: custom list order? / order by rating / by watched date / alphabetically
-- Cookies/Session expiration when closing tab/after a time
 
 ## Functions:
 
@@ -85,3 +84,4 @@ The following images are basic wireframes built to both illustrate function and 
 - users can update user settings (password, email, first name, last name)
 - private lists only show to the user they belong to
 - when logging in from another page on the site, the user will get taken back to that site once logged in.
+- session expires after 30 minutes

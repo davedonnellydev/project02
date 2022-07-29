@@ -209,6 +209,16 @@ input[type=text]:focus,input[type=password]:focus,input[type=email]:focus {
     font-weight: 400;
 }
 
+.notes {
+    display: inline-block;
+    border: none;
+    background-color: white;
+    outline: none;
+    height: 40px;
+    width: 30vw;
+    font-family: 'Inter', sans-serif;
+}
+
 .list_item.indiv > .user_info {
     grid-column: 2 / 3;
     grid-row: 2 / 3;

@@ -1,11 +1,13 @@
 from flask import Flask, render_template, request, redirect, session
 import os
 import service
+import datetime
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'b2d3de63a3d45dc05e53d717e8074103')
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = SECRET_KEY
+app.config['PERMANENT_SESSION_LIFETIME'] = datetime.timedelta(minutes=30)
 
 @app.route('/')
 def index():
@@ -54,13 +56,22 @@ def check_new_user():
 def login():
     user = service.get_session_data()
     username = request.args.get('username')
-    previous_path = request.args.get('previous_path')
+    referer = request.referrer
+    root = request.root_url
+    if root and referer:
+        previous_path = referer.replace(root,"",1)
+    else:
+        previous_path = None
     if 'message' in session:
         message = session['message']
         session.pop('message')
     else:
         message = None
-    return render_template("login.html", user=user, username=username, previous_path=previous_path, message=message)
+    if user:
+        username = user['username']
+        return redirect(f"/user/{username}")
+    else:
+        return render_template("login.html", user=user, username=username, previous_path=previous_path, message=message)
 
 @app.route('/authenticate', methods=['POST'])
 def authenticate():
@@ -68,6 +79,7 @@ def authenticate():
     password = request.form.get('password')
     user_data = service.authenticate_user(username)
     previous_path = request.form.get('previous_path')
+    print(previous_path)
     if user_data['rowCount'] == 0:
         print("Username not found")
         session['message'] = "Username not found"
@@ -81,8 +93,8 @@ def authenticate():
             session["user_email"] = user_data['results'][0][2]
             session["user_fname"] = user_data['results'][0][3]
             session["user_lname"] = user_data['results'][0][4]
-            if previous_path != None:
-                return redirect(previous_path)
+            if previous_path != 'None':
+                return redirect(f"/{previous_path}")
             else:
                 return redirect(f"/user/{username}")
         else:
@@ -148,6 +160,7 @@ def create_list():
 def display_list(userpage,list_id):
     user = service.get_session_data()
     query = request.args.get('query')
+    searchAgain = request.args.get('searchAgain')
     if query:
         results = service.movie_search(query)
     else:
@@ -164,14 +177,17 @@ def display_list(userpage,list_id):
     else:
         multi = 'no'
     path = request.path
-    if user:
-        return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists, list_id=list_id, list_items=list_items, list_data=list_data, edit=edit, multi=multi,path=path)
-    else:
-        if list_data[0][3] == True:
-            user = None
-            return render_template('list_private.html', user=user,path=path)
+    if list_data[0][3] == True:
+        if user:
+            if user['username'] == userpage:
+                return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists, list_id=list_id, list_items=list_items, list_data=list_data, edit=edit, multi=multi,path=path, searchAgain=searchAgain)
+            else:
+                return render_template('list_private.html', user=user,path=path)
         else:
-            return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists, list_id=list_id, list_items=list_items, list_data=list_data, edit=edit, multi=multi,path=path)
+            return render_template('list_private.html', user=user,path=path)
+    else:
+        return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists, list_id=list_id, list_items=list_items, list_data=list_data, edit=edit, multi=multi,path=path, searchAgain=searchAgain)
+
 
 @app.route('/select_multiple', methods=['POST'])
 def select_multiple():
@@ -305,10 +321,19 @@ def update_list():
         private = 't'
     else:
         private = 'f'
-    print(private)
     username = session['username']
     service.update_list_data(list_name,private,list_id)
     return redirect(f"user/{username}/list/{list_id}")
+
+@app.route('/delete_list', methods=['POST'])
+def delete_list():
+    list_id = request.form.get('list_id')
+    items = service.get_list_items(list_id)
+    for item in items:
+        service.delete_item(item[0])
+    service.delete_list(list_id)
+    username = session['username']
+    return redirect(f'/user/{username}')
 
 
 if __name__ == '__main__':

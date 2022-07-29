@@ -243,3 +243,13 @@ def update_list_data(list_name,private,list_id):
     ''', [list_name,private,list_id])
     conn.commit()
     conn.close()
+
+def delete_list(list_id):
+    conn = psycopg2.connect(DATABASE_URL)
+    cur = conn.cursor()
+    cur.execute('''
+    DELETE FROM lists
+    WHERE id=%s;
+    ''', [list_id])
+    conn.commit()
+    conn.close()
