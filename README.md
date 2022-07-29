@@ -68,7 +68,7 @@ The following images are basic wireframes built to both illustrate function and 
 
 ## TO DO:
 - sharable link copied to clipboard
-- rating: custom list order? / order by rating / by watched date / alphabetically
+- custom list order? / order by rating / by watched date
 
 ## Functions:
 
@@ -85,3 +85,4 @@ The following images are basic wireframes built to both illustrate function and 
 - private lists only show to the user they belong to
 - when logging in from another page on the site, the user will get taken back to that site once logged in.
 - session expires after 30 minutes
+- users can sort lists alphabetically or by release date

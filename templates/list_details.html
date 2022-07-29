@@ -4,6 +4,8 @@
     <h2>{{ list_data[0][2] }}</h2>
 </div>
 {% if list_items and user['username'] == userpage %}
+<form><input type="hidden" name="sort" value="alphabetical"><button type="submit">Sort alphabetically</button></form>
+<form><input type="hidden" name="sort" value="releaseDate"><button type="submit">Sort by release date</button></form>
 <div id="list_controls">
   <form action="/select_multiple" method="post">
     <input type="hidden" name="list_id" value="{{ list_data[0][0] }}">

@@ -253,3 +253,12 @@ def delete_list(list_id):
     ''', [list_id])
     conn.commit()
     conn.close()
+
+def alphabetical(e):
+    return e[9]
+
+def addedToList(e):
+    return e[0]
+
+def released(e):
+    return e[10]

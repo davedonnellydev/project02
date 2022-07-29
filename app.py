@@ -161,6 +161,7 @@ def display_list(userpage,list_id):
     user = service.get_session_data()
     query = request.args.get('query')
     searchAgain = request.args.get('searchAgain')
+    sort = request.args.get('sort')
     if query:
         results = service.movie_search(query)
     else:
@@ -172,6 +173,12 @@ def display_list(userpage,list_id):
         list_of_lists = service.get_pub_user_list_data(userpage)
     list_data = service.get_list_data(list_id)
     list_items = service.get_list_items(list_id)
+    if sort == 'alphabetical':
+        list_items.sort(key=service.alphabetical)
+    elif sort == 'releaseDate':
+        list_items.sort(key=service.released)
+    else:
+        list_items.sort(key=service.addedToList)
     if 'multi' in session:
         multi = session['multi']
     else:
@@ -187,6 +194,8 @@ def display_list(userpage,list_id):
             return render_template('list_private.html', user=user,path=path)
     else:
         return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists, list_id=list_id, list_items=list_items, list_data=list_data, edit=edit, multi=multi,path=path, searchAgain=searchAgain)
+
+
 
 
 @app.route('/select_multiple', methods=['POST'])
