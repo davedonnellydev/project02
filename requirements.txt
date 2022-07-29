@@ -4,4 +4,3 @@ bcrypt
 gunicorn
 requests
 service
-dotenv
