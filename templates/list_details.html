@@ -1,13 +1,27 @@
-{% if list_items %}
+{% if list_data %}
 
 <div id="list_header">
     <h2>{{ list_data[0][2] }}</h2>
 </div>
+{% if list_items %}
+<div id="list_controls">
+  <form action="/select_multiple" method="post">
+    <input type="hidden" name="list_id" value="{{ list_data[0][0] }}">
+    <input type="hidden" name="userpage" value="{{ userpage }}">
+    <button id="select_multiple">Select multiple</button>
+</form>
+</div>
+{% endif %}
+
+{% endif %}
+
+<div id="single_list">
+{% if list_items %}
     {% for item in list_items %}
     <div class="list_item indiv">
         <img class="poster" src="https://image.tmdb.org/t/p/w500{{ item[15] }}" width="100px">
         <p class="movie_info"><span class="movie_title">{{ item[9] }}</span> ({{ item[10] }})<br><span class="tagline"><em>{{ item[11] }}</em></span><br>
-            {{ item[12] }} (runtime: {{ item[13] }} mins)
+            {{ item[12] }} <br>(runtime: {{ item[13] }} mins)
         </p>
         {% if user['username'] == userpage and edit|int == item[0]|int %}
         <form action="/confirm_edits" method="post" class="user_info">
@@ -47,7 +61,7 @@
                 {% endif %}
             {% endif %}
             {% if user['username'] == userpage and edit|int == item[0]|int %}
-            <p>edit on</p>
+            <p class="edit"></p>
             {% elif user['username'] == userpage and edit|int != item[0]|int %}
             <form action="/edit_list_item" class="edit" method="post">
                 <input type="hidden" name="list_item_id" value="{{ item[0] }}">
@@ -69,7 +83,11 @@
     </div>
     {% endfor %}
 
+{% elif not list_items and list_id %}
+<p>Add a movie to this list:</p>
+{% else %}
 {% endif %}
+</div>
 
 {% block pageScript %}
 <script>

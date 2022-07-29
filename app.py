@@ -102,11 +102,12 @@ def add_movie():
     movie_list = request.form.getlist('movie_id')
     lists = request.form.getlist('lists')
     user_page = request.form.get('userpage')
+    list_id = request.form.get('list_id')
     for list_id in lists:
         for movie_id in movie_list:
             error = service.add_movie_to_list(list_id,movie_id)
             print(error)
-    return redirect(f'user/{user_page}')
+    return redirect(f'user/{user_page}/list/{list_id}')
 
 
 @app.route('/new_list', methods=['POST'])
@@ -117,7 +118,11 @@ def new_list():
 @app.route('/create_list', methods=['POST'])
 def create_list():
     list_name = request.form.get('list_name')
-    private = request.form.get('private')
+    form_private = request.form.get('private')
+    if form_private:
+        private = 't'
+    else:
+        private = 'f'
     user_id = session['user_id']
     username = session['username']
     service.create_new_list(user_id,list_name,private)
@@ -132,10 +137,33 @@ def display_list(userpage,list_id):
     else:
         results = None
     edit = request.args.get('edit')
-    list_of_lists = service.get_user_list_data(userpage)
+    if user:
+        list_of_lists = service.get_user_list_data(userpage)
+    else:
+        list_of_lists = service.get_pub_user_list_data(userpage)
     list_data = service.get_list_data(list_id)
     list_items = service.get_list_items(list_id)
-    return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists, list_id=list_id, list_items=list_items, list_data=list_data, edit=edit)
+    if 'multi' in session:
+        multi = session['multi']
+    else:
+        multi = 'no'
+    return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists, list_id=list_id, list_items=list_items, list_data=list_data, edit=edit, multi=multi)
+
+@app.route('/select_multiple', methods=['POST'])
+def select_multiple():
+    userpage = request.form.get('userpage')
+    list_id = request.form.get('list_id')
+    session['multi'] = 'yes'
+    return redirect(f'/user/{userpage}/list/{list_id}')
+
+@app.route('/cancel_multiple_select', methods=['POST'])
+def cancel_multiple_select():
+    userpage = request.form.get('userpage')
+    list_id = request.form.get('list_id')
+    session['multi'] = 'no'
+    return redirect(f'/user/{userpage}/list/{list_id}')
+
+
 
 @app.route('/watched', methods=['POST'])
 def watched():
@@ -154,6 +182,18 @@ def delete_single():
     list_item_id = request.form.get('list_item_id')
     list_id = request.form.get('list_id')
     service.delete_item(list_item_id)
+    return redirect(f"user/{username}/list/{list_id}")
+
+
+@app.route('/delete_multiple', methods=['POST'])
+def delete_multiple():
+    user = service.get_session_data()
+    username = user['username']
+    list_item_ids = request.form.getlist('list_item_id')
+    list_id = request.form.get('list_id')
+    for id in list_item_ids:
+        service.delete_item(id)
+    session['multi'] = 'no'
     return redirect(f"user/{username}/list/{list_id}")
 
 @app.route('/edit_list_item', methods=['POST'])
@@ -179,7 +219,12 @@ def confirm_edits():
 @app.route('/settings', methods=['GET','POST'])
 def settings():
     user = service.get_session_data()
-    return render_template('settings.html', user=user)
+    if 'message' in session:
+        message = session['message']
+        session.pop('message')
+    else:
+        message = None
+    return render_template('settings.html', user=user, message=message)
 
 @app.route('/update_safe_settings', methods=['POST'])
 def update_safe_settings():
@@ -198,6 +243,26 @@ def update_safe_settings():
     session["user_lname"] = user_data['results'][0][4]
     return redirect("/settings")
 
+@app.route('/update_password', methods=['POST'])
+def update_password():
+    old_password = request.form.get('old_password')
+    new_password = request.form.get('new_password')
+    user_id = session['user_id']
+    username = session['username']
+
+    password_check = service.authenticate_user(username)
+    db_password = password_check['results'][0][5]
+    if service.check_password(old_password, db_password):
+        print("Password accepted")
+        new_hashed_password = service.encrypt_password(new_password)
+        service.change_password(new_hashed_password,user_id)
+        session['message'] = "Password updated"
+        return redirect(f"/settings")
+    else:
+        print("Password denied")
+        session['message'] = "Password does not match"
+        return redirect(f"/settings")
+
 
 @app.route('/edit_list/<list_id>', methods=['GET', 'POST'])
 def edit_list(list_id):
@@ -209,7 +274,12 @@ def edit_list(list_id):
 def update_list():
     list_id = request.form.get('list_id')
     list_name = request.form.get('list_name')
-    private = request.form.get('private')
+    form_private = request.form.get('private')
+    if form_private:
+        private = 't'
+    else:
+        private = 'f'
+    print(private)
     username = session['username']
     service.update_list_data(list_name,private,list_id)
     return redirect(f"user/{username}/list/{list_id}")

@@ -4,13 +4,17 @@
 {% block content %}
 
 {% include 'sidenav.html' %}
+<div id="content">
 
-<form action="/create_list" method="post">
-    <label for="list_name">List name:</label>
-    <input type="text" id="list_name" name="list_name">
-    <label for="private">Private?</label>
-    <input type="checkbox" id="private" name="private">
-    <button type="submit">Create list</button>
-</form>
+<div class="center_form">
+    <form action="/create_list" method="post">
+        <label for="list_name">List name:</label>
+        <input type="text" id="list_name" name="list_name">
+        <label for="private">Private?</label>
+        <input type="checkbox" id="private" name="private" value="t">
+        <button type="submit">Create list</button>
+    </form>
+</div>
 
+</div>
 {% endblock %}

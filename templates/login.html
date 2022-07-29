@@ -3,12 +3,16 @@
 
 {% block content %}
 
-<div id="login">
+<div id="content">
+
+<div class="center_form">
     <form action="/authenticate" method="post">
         <input type="text" name="username" id="username" placeholder="Username" value="{% if username %}{{ username }}{% endif %}">
         <input type="password" name="password" id="password" placeholder="Password">
         <button type="submit">Login</button>
     </form>
+</div>
+
 </div>
 
 {% endblock %}

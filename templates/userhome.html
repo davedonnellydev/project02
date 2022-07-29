@@ -6,8 +6,13 @@
 {% include 'sidenav.html' %}
 
     <div id="content">
+        {% if multi == 'yes' %}
+        {% include 'list_details_multiple.html' %}
 
+        {% else %}
         {% include 'list_details.html' %}
+
+        {% endif %}
 
         {% include 'movie_search.html' %}
     </div>

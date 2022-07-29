@@ -5,13 +5,20 @@
 
 {% include 'sidenav.html' %}
 
-<form action="/update_list" method="post">
-    <label for="list_name">List name:</label>
-    <input type="text" id="list_name" name="list_name" value="{{ list_data[0][2] }}">
-    <label for="private">Private?</label>
-    <input type="checkbox" id="private" name="private" value="{{ list_data[0][3] }}">
-    <input type="hidden" id="list_id" name="list_id" value="{{ list_data[0][0] }}">
-    <button type="submit">Update list</button>
-</form>
+<div class="center_form">
+    <form action="/update_list" method="post">
+        <label for="list_name">List name:</label>
+        <input type="text" id="list_name" name="list_name" value="{{ list_data[0][2] }}">
+        <label for="private">Private? <input type="checkbox" id="private" name="private" value="t" {% if list_data[0][3] == True %}checked{% endif %}></label>
+        <input type="hidden" id="list_id" name="list_id" value="{{ list_data[0][0] }}">
+        <button type="submit" id="updateListButton">Update list</button>
+    </form>
+    <hr>
+    <form action="/delete_list" method="post">
+        <input type="hidden" id="list_id" name="list_id" value="{{ list_data[0][0] }}">
+        <button type="submit" id="deleteListButton">Delete list</button>
+    </form>
+
+</div>
 
 {% endblock %}

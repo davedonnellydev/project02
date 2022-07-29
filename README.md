@@ -66,17 +66,13 @@ The following images are basic wireframes built to both illustrate function and 
 
 - user/list link combo works even when the list doesn't belong to the user. In some instances this would result in user being able to edit other user's lists.
 - when editing list items without a 'watched' date, if the date stays empty, an error occurs
-- issues with updating list privacy
 
 
 ## TO DO:
 - make private lists only show to user
-- edit/delete list data
 - when logging in/out, go back to the page the person was originally on
 - rating: custom list order? / order by rating / by watched date / alphabetically
-- User settings page (Update password, email, first name, last name etc)
-- Scroll functionality in sidebar
-- Scroll functionality in main
+
 - Cookies/Session expiration when closing tab/after a time
 
 ## Functions:
@@ -88,3 +84,6 @@ The following images are basic wireframes built to both illustrate function and 
 - users can mark when they've watched a film
 - users can add notes, a rating and edit their 'watched date' for any film
 - users can delete individual films from their lists
+- users can select multiple films from their list to delete at once
+- users can edit/delete list data
+- users can update user settings (password, email, first name, last name)

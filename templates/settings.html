@@ -1,7 +1,9 @@
 {% extends "base.html" %}
-{% block title %} Settings {% endblock %}
+{% block title %}Settings{% endblock %}
 
 {% block content %}
+
+<div id="content">
 
 {% if user['username'] %}
 
@@ -19,14 +21,47 @@
     </form>
 </div>
 
-<div id="password_settings">
+<div id="passwordButtonDiv" {% if message %} style="display: none;"{% endif %}><button id="updatePasswordButton">Change password</button></div>
+
+<div id="password_settings" {% if not message %} style="display: none;"{% endif %}>
+    {% if message %}
+        {% if message == 'Password updated' %}
+        <p id="password_ok">
+        {% elif message == 'Password does not match' %}
+        <p id="password_error">
+        {% else %}
+        <p>
+        {% endif %}
+    {{ message }}</p>
+    {% endif %}
     <form action="/update_password" method="post">
-    <label for="password">Password</label>
-    <input type="password" id="password" name="password">
+    <label for="old_password">Previous password</label>
+    <input type="password" id="old_password" name="old_password">
+    <label for="new_password">New password</label>
+    <input type="password" id="new_password" name="new_password">
     <button type="submit">Update password</button>
     </form>
 </div>
 
+
+
 {% endif %}
 
+</div>
+
+{% endblock %}
+
+{% block pageScript %}
+<script>
+    const updatePasswordButton = document.getElementById("updatePasswordButton");
+    const updatePasswordDiv = document.getElementById("passwordButtonDiv");
+    const updatePasswordForm = document.getElementById("password_settings");
+
+    updatePasswordButton.addEventListener("click", revealPasswordUpdate);
+
+    function revealPasswordUpdate() {
+    updatePasswordForm.style.display = "flex";
+    updatePasswordDiv.style.display = "none";
+    }
+</script>
 {% endblock %}

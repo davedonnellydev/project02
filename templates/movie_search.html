@@ -1,30 +1,50 @@
 {% if user['username'] == userpage %}
-    <button id="movieSearchButton" title="Add movie">+</button>
 
-    <form id="movieSearchForm" method="get" style="display: none;">
-        <label for="movieSearch">Search: </label>
-        <input type="text" name="query" id="movieSearch" {% if query %} value="{{ query }}" {% endif %}>
-        <button type="submit">Search</button>
-    </form>
+    {% if list_id and not query %}
+    <button id="movieSearchButton" title="Add movie">+</button>
+    {% endif %}
+
+    <div id="search_form">
+        <form id="movieSearchForm" method="get" style="display: none;">
+            <label for="movieSearch">Search: </label>
+            <input type="text" name="query" id="movieSearch" {% if query %} value="{{ query }}" {% endif %}>
+            <button type="submit">Search</button>
+        </form>
+    </div>
 {% endif %}
 
 {% if results and results['total_results']|int > 0 %}
-    <form action="/add_movie" method="post">
-        <label for="lists">Select which lists to add the movies to:</label>
-        <select name="lists" id="lists" multiple>
-            {% for list in list_of_lists %} <option value="{{ list[0] }}">{{ list[2] }}</option>{% endfor %}
-        </select>
+    <form id="search_results" action="/add_movie" method="post">
+        <div id="list_select">
+            <label for="lists">Select which lists to add the movies to (hold 'ctrl'/'cmd' to select multiple):</label>
+            <select name="lists" id="lists" multiple>
+                {% for list in list_of_lists %} <option value="{{ list[0] }}" {% if list[0]|int == list_id|int %}selected{% endif %}>{{ list[2] }}</option>{% endfor %}
+            </select>
+        </div>
         {% for item in results['results'] %}
             <div class="movie_option">
-                <input type="checkbox" id="{{item['imdb_id']}}" name="movie_id" value="{{item['id']}}">
-                <label for="{{item['imdb_id']}}">{{item['title']}} ({{item['release_date']}}) - {{item['overview']}}</label>
+                <label for="mov_{{item['id']}}"><input type="checkbox" id="mov_{{item['id']}}" name="movie_id" value="{{item['id']}}">{{item['title']}} ({{item['release_date']}}) - {{item['overview']}}</label>
             </div>
         {% endfor %}
         <input type="hidden" name="userpage" value="{{ userpage }}">
+        <input type="hidden" name="list_id" value="{{ list_id }}">
         <button type="submit">Add</button>
     </form>
 {% elif results and results['total_results']|int == 0 %}
     <p><em>No movies found with that title</em></p>
 {% else %}
+
+{% block pageScript %}
+<script>
+    const addMovieButton = document.getElementById("movieSearchButton");
+    const searchMoviesForm = document.getElementById("movieSearchForm");
+
+    addMovieButton.addEventListener("click", revealSearchForm);
+
+    function revealSearchForm() {
+    searchMoviesForm.style.display = "block";
+    }
+</script>
+{% endblock %}
 
 {% endif %}
