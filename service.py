@@ -111,7 +111,8 @@ def get_pub_user_list_data(userpage):
     cur.execute('SELECT id FROM users WHERE username = %s;', [userpage])
     result = cur.fetchall()
     user_id = result[0]
-    cur.execute('SELECT * FROM lists WHERE user_id = %s and priv="t";', [user_id])
+    private = 'f'
+    cur.execute('SELECT * FROM lists WHERE user_id = %s and priv=%s;', [user_id,private])
     results = cur.fetchall()
     return results
 
@@ -189,15 +190,26 @@ def delete_item(list_item_id):
     conn.close()
 
 def update_list_item(watched_date,rating,notes,list_item_id):
-    conn = psycopg2.connect(DATABASE_URL)
-    cur = conn.cursor()
-    cur.execute('''
-    UPDATE list_items
-    SET watched=%s, rating=%s, notes=%s
-    WHERE id=%s;
-    ''', [watched_date,rating,notes,list_item_id])
-    conn.commit()
-    conn.close()
+    if watched_date == '':
+        conn = psycopg2.connect(DATABASE_URL)
+        cur = conn.cursor()
+        cur.execute('''
+        UPDATE list_items
+        SET rating=%s, notes=%s
+        WHERE id=%s;
+        ''', [rating,notes,list_item_id])
+        conn.commit()
+        conn.close()
+    else:
+        conn = psycopg2.connect(DATABASE_URL)
+        cur = conn.cursor()
+        cur.execute('''
+        UPDATE list_items
+        SET watched=%s, rating=%s, notes=%s
+        WHERE id=%s;
+        ''', [watched_date,rating,notes,list_item_id])
+        conn.commit()
+        conn.close()
 
 def update_settings(user_email,fname,lname,user_id):
     conn = psycopg2.connect(DATABASE_URL)

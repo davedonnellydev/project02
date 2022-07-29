@@ -54,15 +54,23 @@ def check_new_user():
 def login():
     user = service.get_session_data()
     username = request.args.get('username')
-    return render_template("login.html", user=user, username=username)
+    previous_path = request.args.get('previous_path')
+    if 'message' in session:
+        message = session['message']
+        session.pop('message')
+    else:
+        message = None
+    return render_template("login.html", user=user, username=username, previous_path=previous_path, message=message)
 
 @app.route('/authenticate', methods=['POST'])
 def authenticate():
     username = request.form.get('username')
     password = request.form.get('password')
     user_data = service.authenticate_user(username)
+    previous_path = request.form.get('previous_path')
     if user_data['rowCount'] == 0:
         print("Username not found")
+        session['message'] = "Username not found"
         return redirect("/login")
     else:
         db_password = user_data['results'][0][5]
@@ -73,10 +81,14 @@ def authenticate():
             session["user_email"] = user_data['results'][0][2]
             session["user_fname"] = user_data['results'][0][3]
             session["user_lname"] = user_data['results'][0][4]
-            return redirect(f"/user/{username}")
+            if previous_path != None:
+                return redirect(previous_path)
+            else:
+                return redirect(f"/user/{username}")
         else:
             print("Password denied")
-            return redirect("/")
+            session['message'] = "Password incorrect"
+            return redirect("/login")
 
 
 @app.route('/logout')
@@ -93,8 +105,12 @@ def user_page(userpage):
         results = service.movie_search(query)
     else:
         results = None
-    list_of_lists = service.get_user_list_data(userpage)
-    return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists)
+    if user:
+        list_of_lists = service.get_user_list_data(userpage)
+    else:
+        list_of_lists = service.get_pub_user_list_data(userpage)
+    path = request.path
+    return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists, path=path)
 
 
 @app.route('/add_movie', methods=['POST'])
@@ -147,7 +163,15 @@ def display_list(userpage,list_id):
         multi = session['multi']
     else:
         multi = 'no'
-    return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists, list_id=list_id, list_items=list_items, list_data=list_data, edit=edit, multi=multi)
+    path = request.path
+    if user:
+        return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists, list_id=list_id, list_items=list_items, list_data=list_data, edit=edit, multi=multi,path=path)
+    else:
+        if list_data[0][3] == True:
+            user = None
+            return render_template('list_private.html', user=user,path=path)
+        else:
+            return render_template('userhome.html', user=user, userpage=userpage, query=query, results=results, list_of_lists=list_of_lists, list_id=list_id, list_items=list_items, list_data=list_data, edit=edit, multi=multi,path=path)
 
 @app.route('/select_multiple', methods=['POST'])
 def select_multiple():
@@ -211,6 +235,7 @@ def confirm_edits():
     list_item_id = request.form.get('list_item_id')
     list_id = request.form.get('list_id')
     watched_date = request.form.get('watched_date')
+    print(watched_date)
     rating = request.form.get('rating')
     notes = request.form.get('notes')
     service.update_list_item(watched_date, rating, notes, list_item_id)
@@ -255,6 +280,7 @@ def update_password():
     if service.check_password(old_password, db_password):
         print("Password accepted")
         new_hashed_password = service.encrypt_password(new_password)
+        print(new_hashed_password)
         service.change_password(new_hashed_password,user_id)
         session['message'] = "Password updated"
         return redirect(f"/settings")

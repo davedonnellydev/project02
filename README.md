@@ -64,15 +64,11 @@ The following images are basic wireframes built to both illustrate function and 
 
 ## BUGS!
 
-- user/list link combo works even when the list doesn't belong to the user. In some instances this would result in user being able to edit other user's lists.
-- when editing list items without a 'watched' date, if the date stays empty, an error occurs
-
+-logging in from other pages sometimes bugs out
 
 ## TO DO:
-- make private lists only show to user
-- when logging in/out, go back to the page the person was originally on
+- sharable link copied to clipboard
 - rating: custom list order? / order by rating / by watched date / alphabetically
-
 - Cookies/Session expiration when closing tab/after a time
 
 ## Functions:
@@ -87,3 +83,5 @@ The following images are basic wireframes built to both illustrate function and 
 - users can select multiple films from their list to delete at once
 - users can edit/delete list data
 - users can update user settings (password, email, first name, last name)
+- private lists only show to the user they belong to
+- when logging in from another page on the site, the user will get taken back to that site once logged in.

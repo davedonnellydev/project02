@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}{{ userpage }}'s New List{% endblock %}
-
+{% block title %}{{ user['username'] }}'s New List{% endblock %}
 {% block content %}
 
 {% include 'sidenav.html' %}
+{% block sidenav_heading %}{{ user['username'] }}{% endblock %}
 <div id="content">
 
 <div class="center_form">

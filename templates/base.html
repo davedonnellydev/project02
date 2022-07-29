@@ -19,7 +19,7 @@
                                 <p>Hi {{ user['user_fname'] }}</p>
                                 <a href="/logout">Log out</a>
                             {% else %}
-                                <a href="/login">Login</a> or <a href="/signup">Sign up</a>
+                                <form action="/login"><input type="hidden" name="previous_path" value="{{ path }}"><button type="submit">Login</button><a href="/login">Login</a></form> or <a href="/signup">Sign up</a>
                             {% endif %}
                     </div>
                 {% block pageheading %}{% endblock %}

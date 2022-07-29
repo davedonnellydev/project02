@@ -6,6 +6,13 @@
 {% include 'sidenav.html' %}
 
     <div id="content">
+        {% if list_of_lists and not list_id %}
+        <h2><--- Click on a list to view</h2>
+        {% elif not list_of_lists and not list_id and not user %}
+        <h2>Uh oh! It looks like {{ userpage }} doesn't have any public lists :( </h2>
+        {% else %}
+        {% endif %}
+
         {% if multi == 'yes' %}
         {% include 'list_details_multiple.html' %}
 

@@ -3,7 +3,7 @@
 <div id="list_header">
     <h2>{{ list_data[0][2] }}</h2>
 </div>
-{% if list_items %}
+{% if list_items and user['username'] == userpage %}
 <div id="list_controls">
   <form action="/select_multiple" method="post">
     <input type="hidden" name="list_id" value="{{ list_data[0][0] }}">

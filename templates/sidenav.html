@@ -1,11 +1,15 @@
 <div id="sidenav">
-    <h2>{{ user['username'] }}'s lists</h2>
+    <h2>{% block sidenav_heading %}{% endblock %}{{ userpage }}'s lists</h2>
 
-    <ul>
-        {% for list in list_of_lists %}
-            <li><form action="/user/{{ userpage }}/list/{{ list[0] }}" method="post"><button type="submit">{{ list[2] }}</button></form></li>
-        {% endfor %}
-    </ul>
+        {% if list_of_lists %}
+            {% for list in list_of_lists %}
+            <ul>
+                <li><form action="/user/{{ userpage }}/list/{{ list[0] }}" method="post"><button type="submit">{{ list[2] }}</button></form></li>
+            </ul>
+            {% endfor %}
+        {% else %}
+            <p>No lists available.</p>
+        {% endif %}
 
     {% if user['user_id'] %}
         <div id="side-controls">
