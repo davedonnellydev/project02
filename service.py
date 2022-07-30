@@ -74,7 +74,7 @@ def get_session_data():
 
 def movie_search(query):
     params = {
-        "api_key": local_apikey,
+        "api_key": API_KEY,
         "language": "en-US",
         "page": 1,
         "include_adult": "true",
@@ -86,7 +86,7 @@ def movie_search(query):
 
 def get_movie_info(movie_id):
     params = {
-        "api_key": local_apikey,
+        "api_key": API_KEY,
         "language": "en-US"
     }
     response = requests.get(f"https://api.themoviedb.org/3/movie/{movie_id}", params=params)
