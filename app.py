@@ -118,7 +118,10 @@ def user_page(userpage):
     else:
         results = None
     if user:
-        list_of_lists = service.get_user_list_data(userpage)
+        if user['username'] == userpage:
+            list_of_lists = service.get_user_list_data(userpage)
+        else:
+            list_of_lists = service.get_pub_user_list_data(userpage)
     else:
         list_of_lists = service.get_pub_user_list_data(userpage)
     path = request.path
