@@ -4,4 +4,4 @@ bcrypt
 gunicorn
 requests
 service
-dotenv
+python-dotenv
