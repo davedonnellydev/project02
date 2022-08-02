@@ -191,6 +191,27 @@ def delete_item(list_item_id):
     conn = psycopg2.connect(DATABASE_URL)
     cur = conn.cursor()
     cur.execute('''
+    SELECT movie_id FROM list_items
+    WHERE id=%s;
+    ''', [list_item_id])
+    movie_id = cur.fetchall()[0]
+    cur.execute('''
+    SELECT user_count FROM movies
+    WHERE id=%s;
+    ''',[movie_id])
+    user_count = cur.fetchall()[0]
+    if user_count > 1:
+        new_user_count = user_count - 1
+        cur.execute('''
+        UPDATE movies SET user_count=%s
+        WHERE id=%s;
+        ''', [new_user_count,movie_id])
+    elif user_count == 1:
+        cur.execute('''
+        DELETE FROM movies
+        WHERE id=%s;
+        ''', [movie_id])
+    cur.execute('''
     DELETE FROM list_items
     WHERE id=%s;
     ''', [list_item_id])

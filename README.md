@@ -64,11 +64,19 @@ The following images are basic wireframes built to both illustrate function and 
 
 ## BUGS!
 
--No bugs currently found
+- If coming from another website, the 'previous path' retains that website and attempts to use that website as the path...
 
 ## TO DO:
 - sharable link copied to clipboard
 - custom list order? / order by rating / by watched date
+- drag and drop to reorder list items
+- user login validation (email, password etc)
+- icons/favicon
+- upper/lower case handling
+- date translations
+- better css on user comments & ratings
+- mobile responsive design
+- use javascript to get session data?
 
 ## Functions:
 
