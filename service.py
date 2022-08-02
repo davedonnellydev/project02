@@ -3,18 +3,18 @@ import psycopg2
 import bcrypt
 import requests
 from flask import session
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 
 
-# def configure():
-#     load_dotenv()
+def configure():
+    load_dotenv()
 
-# configure()
+configure()
 
 salt = bcrypt.gensalt()
 
-# local_apikey = os.getenv('api_key')
-local_apikey = ''
+local_apikey = os.getenv('api_key')
+# local_apikey = ''
 
 
 DATABASE_URL = os.environ.get('DATABASE_URL', 'dbname=movie_list')
@@ -194,28 +194,34 @@ def delete_item(list_item_id):
     SELECT movie_id FROM list_items
     WHERE id=%s;
     ''', [list_item_id])
-    movie_id = cur.fetchall()[0]
+    movie_id = cur.fetchall()[0][0]
+    print(movie_id)
+
     cur.execute('''
     SELECT user_count FROM movies
     WHERE id=%s;
     ''',[movie_id])
-    user_count = cur.fetchall()[0]
+    user_count = int(cur.fetchall()[0][0])
+
+    cur.execute('''
+    DELETE FROM list_items
+    WHERE id=%s;
+    ''', [list_item_id])
+    conn.commit()
+
     if user_count > 1:
         new_user_count = user_count - 1
         cur.execute('''
         UPDATE movies SET user_count=%s
         WHERE id=%s;
         ''', [new_user_count,movie_id])
+        conn.commit()
     elif user_count == 1:
         cur.execute('''
         DELETE FROM movies
         WHERE id=%s;
         ''', [movie_id])
-    cur.execute('''
-    DELETE FROM list_items
-    WHERE id=%s;
-    ''', [list_item_id])
-    conn.commit()
+        conn.commit()
     conn.close()
 
 def update_list_item(watched_date,rating,notes,list_item_id):
