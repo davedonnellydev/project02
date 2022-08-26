@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, session
 import os
 import service
 import datetime
+from re import search
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'b2d3de63a3d45dc05e53d717e8074103')
 
@@ -58,7 +59,9 @@ def login():
     username = request.args.get('username')
     referer = request.referrer
     root = request.root_url
-    if root and referer:
+    # needs a regex for user/username/list/number or user/username
+    substring = 'user'
+    if root and (search(substring, referer)):
         previous_path = referer.replace(root,"",1)
     else:
         previous_path = None
@@ -78,8 +81,8 @@ def authenticate():
     username = request.form.get('username')
     password = request.form.get('password')
     user_data = service.authenticate_user(username)
-    previous_path = request.form.get('previous_path')
-    print(previous_path)
+    # previous_path = request.form.get('previous_path')
+    # print(previous_path)
     if user_data['rowCount'] == 0:
         print("Username not found")
         session['message'] = "Username not found"
@@ -93,10 +96,10 @@ def authenticate():
             session["user_email"] = user_data['results'][0][2]
             session["user_fname"] = user_data['results'][0][3]
             session["user_lname"] = user_data['results'][0][4]
-            if previous_path != 'None':
-                return redirect(f"/{previous_path}")
-            else:
-                return redirect(f"/user/{username}")
+            # if previous_path != 'None':
+            #     return redirect(f"/{previous_path}")
+            # else:
+            return redirect(f"/user/{username}")
         else:
             print("Password denied")
             session['message'] = "Password incorrect"

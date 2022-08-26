@@ -5,3 +5,4 @@ gunicorn
 requests
 service
 python-dotenv
+re
