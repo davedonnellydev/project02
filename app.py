@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, session
 import os
 import service
 import datetime
-from re import search
+# from re import search
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'b2d3de63a3d45dc05e53d717e8074103')
 
@@ -57,14 +57,14 @@ def check_new_user():
 def login():
     user = service.get_session_data()
     username = request.args.get('username')
-    referer = request.referrer
-    root = request.root_url
-    # needs a regex for user/username/list/number or user/username
-    substring = 'user'
-    if root and (search(substring, referer)):
-        previous_path = referer.replace(root,"",1)
-    else:
-        previous_path = None
+    # referer = request.referrer
+    # root = request.root_url
+    # # needs a regex for user/username/list/number or user/username
+    # substring = 'user'
+    # if root and (search(substring, referer)):
+    #     previous_path = referer.replace(root,"",1)
+    # else:
+    previous_path = None
     if 'message' in session:
         message = session['message']
         session.pop('message')
