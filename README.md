@@ -1,6 +1,6 @@
 # A-Lister
 
-A-Lister (working title) is an online 'to-watch' list keeper. A-Lister is a flask python app supported by a postgreSQL database, hosted on [github](https://github.com/davebdev/project02) and using heroku to deploy at [https://enigmatic-caverns-29903.herokuapp.com/](https://enigmatic-caverns-29903.herokuapp.com/). A-Lister uses an API developed at [The Movie DB](https://www.themoviedb.org/documentation/api) to supply all the movie data.
+A-Lister (working title) is an online 'to-watch' list keeper. A-Lister is a flask python app supported by a postgreSQL database, hosted on [github](https://github.com/davebdev/project02) and originally deployed using heroku but now deployed using render.com at [https://a-lister.onrender.com/](https://a-lister.onrender.com/). A-Lister uses an API developed at [The Movie DB](https://www.themoviedb.org/documentation/api) to supply all the movie data.
 
 This has been created for Unit 2 of the General Assembly Software Engineering intensive (remote flex), cohort 08. This unit has been my first foray into Python.
 
