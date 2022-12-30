@@ -6,8 +6,9 @@ This has been created for Unit 2 of the General Assembly Software Engineering in
 
 A test user has been created for viewers to login with:
 
-Username: tester
-Password: welcome
+**Username**: tester
+
+**Password**: welcome
 
 ## Database design
 
