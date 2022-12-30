@@ -4,6 +4,11 @@ A-Lister (working title) is an online 'to-watch' list keeper. A-Lister is a flas
 
 This has been created for Unit 2 of the General Assembly Software Engineering intensive (remote flex), cohort 08. This unit has been my first foray into Python.
 
+A test user has been created for viewers to login with:
+
+Username: tester
+Password: welcome
+
 ## Database design
 
 My approach to this app was to first try to get an understanding of the way the database would be structured. In tandem with this, I tried to come up with some wireframes for the pages that would appear, which solidified the user flow through the app, and also allowed me to amend the database structure to work with my intentions for the app, all before I'd written a single line of code. This approach meant I could properly size the scope of this project and remove a few extra things that I knew I wouldn't have time for in the week I had to build it. Some of the extra features I was hoping to incorporate were:
